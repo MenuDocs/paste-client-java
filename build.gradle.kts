@@ -18,11 +18,8 @@ repositories {
 }
 
 dependencies {
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api("org.apache.commons:commons-math3:3.6.1")
-
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation("com.google.guava:guava:27.1-jre")
+    api(group = "com.squareup.okhttp3", name = "okhttp", version = "4.0.1")
+    implementation(group = "me.duncte123", name = "reliqua", version = "2.4.8")
 
     // Use JUnit test framework
     testImplementation("junit:junit:4.12")
