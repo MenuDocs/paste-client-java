@@ -72,9 +72,8 @@ bintray {
     setPublications("BintrayUpload")
     pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
         repo = "maven"
-        name = "ms"
-        setLicenses("Apache-2.0")
-        vcsUrl = "https://github.com/duncte123/ms-java.git"
+        name = "paste-client-java"
+        vcsUrl = "https://github.com/MenuDocs/paste-client-java.git"
         publish = true
         version(delegateClosureOf<BintrayExtension.VersionConfig>  {
             name = project.version as String
