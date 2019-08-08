@@ -5,10 +5,11 @@ import com.github.natanbc.reliqua.request.PendingRequest;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +29,9 @@ public class PasteClientBuilder {
         return this;
     }
 
-    public void setPasteHost(PasteHost pasteHost) {
+    public PasteClientBuilder setPasteHost(PasteHost pasteHost) {
         this.pasteHost = pasteHost;
+        return this;
     }
 
     public PasteClient build() {
@@ -62,9 +64,33 @@ public class PasteClientBuilder {
 
             return createRequest(
                     defaultRequest()
-                    .post(RequestBody.create(createFormBody(postBody).getBytes()))
-                    .url(this.baseUrl + "/paste/new")
-            ).build((r) -> r.body().string(), null);
+                            .header("Content-Type", "application/x-www-form-urlencoded")
+                            .post(RequestBody.create(createFormBody(postBody).getBytes()))
+                            .url(this.baseUrl + "/paste/new")
+            ).build((r) -> {
+                String loc = r.header("location");
+                return loc.substring(loc.lastIndexOf('/') + 1);
+            }, null);
+        }
+
+        @Override
+        public PendingRequest<Paste> getPaste(String pasteId) {
+            return createRequest(defaultRequest().get().url(this.baseUrl + "/paste/" + pasteId + ".json"))
+                    .build((r) -> {
+                        JSONObject json = new JSONObject(new JSONTokener(r.body().byteStream()));
+                        String id = json.getString("id");
+                        JSONObject language = json.getJSONObject("language");
+
+                        return new PasteImpl(
+                                id,
+                                json.getString("body"),
+                                this.baseUrl + "/paste/" + id,
+                                new LanguageImpl(
+                                        language.getString("name"),
+                                        language.getString("id")
+                                )
+                        );
+                    }, null);
         }
 
         private Request.Builder defaultRequest() {
