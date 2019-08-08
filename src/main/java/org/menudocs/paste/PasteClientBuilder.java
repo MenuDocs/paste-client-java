@@ -8,8 +8,8 @@ import okhttp3.RequestBody;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,11 +101,16 @@ public class PasteClientBuilder {
         private String createFormBody(Map<String, String> fields) {
             StringBuilder builder = new StringBuilder();
 
-            for (final Map.Entry<String, String> entry : fields.entrySet()) {
-                builder.append('&')
-                        .append(URLEncoder.encode(entry.getKey(), Charset.defaultCharset()))
-                        .append('=')
-                        .append(URLEncoder.encode(entry.getValue(), Charset.defaultCharset()));
+            try {
+                for (final Map.Entry<String, String> entry : fields.entrySet()) {
+                    builder.append('&')
+                            .append(URLEncoder.encode(entry.getKey(), "UTF-8"))
+                            .append('=')
+                            .append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                }
+            }
+            catch (UnsupportedEncodingException ignored) {
+                return ""; // should never happen
             }
 
             return builder.toString().substring(1);
