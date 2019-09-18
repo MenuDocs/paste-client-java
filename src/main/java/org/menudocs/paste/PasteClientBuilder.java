@@ -35,21 +35,48 @@ public class PasteClientBuilder {
     private String userAgent = "paste-client-java";
     private PasteHost pasteHost = PasteHost.MENUDOCS;
 
+    /**
+     * Sets the default paste expiry, this is useful so that you don't need to specify the expiry every time
+     *
+     * @param defaultExpiry the default expiry time
+     *                      Examples: 30µs, 10s, 1h, 15d
+     *
+     * @return The current builder for chaining
+     */
     public PasteClientBuilder setDefaultExpiry(String defaultExpiry) {
         this.defaultExpiry = defaultExpiry;
         return this;
     }
 
+    /**
+     * Sets the user agent
+     *
+     * @param userAgent the user agent to use when making request
+     *
+     * @return The current builder for chaining
+     */
     public PasteClientBuilder setUserAgent(String userAgent) {
         this.userAgent = userAgent;
         return this;
     }
 
+    /**
+     * Sets the host that we need to use for making the requests
+     *
+     * @param pasteHost the new paste host to use, default is {@link PasteHost#MENUDOCS MenuDocs}
+     *
+     * @return The current builder for chaining
+     */
     public PasteClientBuilder setPasteHost(PasteHost pasteHost) {
         this.pasteHost = pasteHost;
         return this;
     }
 
+    /**
+     * Builds the client
+     *
+     * @return The paste client that you can use to create pastes
+     */
     public PasteClient build() {
         return new PasteClientImpl(this.userAgent, this.defaultExpiry, this.pasteHost);
     }
@@ -115,6 +142,8 @@ public class PasteClientBuilder {
         }
 
         private String createFormBody(Map<String, String> fields) {
+            // TODO: Use streams
+
             StringBuilder builder = new StringBuilder();
 
             try {

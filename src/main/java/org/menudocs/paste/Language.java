@@ -16,7 +16,23 @@
 
 package org.menudocs.paste;
 
+/**
+ * Represents a language object, a full list of languages can be found at <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
+ *
+ */
 public interface Language {
+
+    /**
+     * Returns the id of the language, eg "text"
+     *
+     * @return The id of the language
+     */
     String getId();
+
+    /**
+     * Returns the name of the language, eg "Plain Text"
+     *
+     * @return The name of the language
+     */
     String getName();
 }

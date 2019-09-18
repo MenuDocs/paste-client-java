@@ -19,8 +19,33 @@ package org.menudocs.paste;
 import com.github.natanbc.reliqua.request.PendingRequest;
 
 public interface PasteClient {
+    /**
+     * Creates a paste
+     *
+     * @param lang The language to use, languages can be obtained from <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
+     * @param body The text content of the paste
+     *             
+     * @return The id of the created paste, the paste can be retrieved with {@link #getPaste(String) #getPaste(String)}
+     */
     PendingRequest<String> createPaste(String lang, String body);
+
+    /**
+     * Creates a paste
+     *
+     * @param lang The language to use, languages can be obtained from <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
+     * @param body The text content of the paste
+     * @param expiration The expiration of the paste, useful if you don't want to use the default set expiration on the builder
+     *
+     * @return The id of the created paste, the paste can be retrieved with {@link #getPaste(String) #getPaste(String)}
+     */
     PendingRequest<String> createPaste(String lang, String body, String expiration);
 
+    /**
+     * Retrieves a paste by it's id
+     *
+     * @param pasteId The id of the paste to look up the info for
+     *
+     * @return The paste
+     */
     PendingRequest<Paste> getPaste(String pasteId);
 }

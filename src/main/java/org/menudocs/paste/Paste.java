@@ -17,8 +17,31 @@
 package org.menudocs.paste;
 
 public interface Paste {
+    /**
+     * Returns the id of the paste
+     *
+     * @return The id of the paste
+     */
     String getId();
+
+    /**
+     * Returns the body of the paste
+     *
+     * @return The body of the paste
+     */
     String getBody();
+
+    /**
+     * Returns the url of the paste, this url can be used to view the paste in a browser
+     *
+     * @return The url of the paste
+     */
     String getPasteUrl();
+
+    /**
+     * Returns the language info of the paste
+     *
+     * @return The language info of the paste
+     */
     Language getLanguage();
 }

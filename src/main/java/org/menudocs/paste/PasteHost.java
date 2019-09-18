@@ -16,13 +16,36 @@
 
 package org.menudocs.paste;
 
-public enum PasteHost {
-    MENUDOCS("https://paste.menudocs.org"),
-    LOCAL("http://localhost:7000");
+import java.net.URI;
+
+public class PasteHost {
+    /**
+     * The default MenuDocs paste
+     */
+    public static final PasteHost MENUDOCS = new PasteHost("https://paste.menudocs.org");
+    /**
+     * The paste service when running locally for testing
+     */
+    public static final PasteHost LOCAL = new PasteHost("http://localhost:7000");
 
     private final String url;
-    PasteHost(String url) {
+    private PasteHost(String url) {
         this.url = url;
+    }
+
+    /**
+     * Allows you to use this lib with your own GhostBin paste
+     *
+     * @param uri the base url of your server, eg https://paste.menudocs.org
+     */
+    public PasteHost(URI uri) {
+        String port = "";
+
+        if (uri.getPort() > -1) {
+            port = ":" + uri.getPort();
+        }
+
+        this.url = String.format("%s://%s%s%s", uri.getScheme(), uri.getHost(), port, uri.getRawPath());
     }
 
     public String getUrl() {
