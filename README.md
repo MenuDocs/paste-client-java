@@ -63,6 +63,11 @@ client.createPaste("html", "<h1>testing</h1>").async((pasteID) -> {
 });
 ```
 
+#### Getting the paste url
+```java
+String pasteUrl = client.getPasteUrl(pasteID);
+```
+
 #### Retrieving a paste
 ```java
 // Sync operation

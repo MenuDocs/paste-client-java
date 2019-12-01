@@ -22,9 +22,11 @@ public interface PasteClient {
     /**
      * Creates a paste
      *
-     * @param lang The language to use, languages can be obtained from <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
-     * @param body The text content of the paste
-     *             
+     * @param lang
+     *         The language to use, languages can be obtained from <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
+     * @param body
+     *         The text content of the paste
+     *
      * @return The id of the created paste, the paste can be retrieved with {@link #getPaste(String) #getPaste(String)}
      */
     PendingRequest<String> createPaste(String lang, String body);
@@ -32,9 +34,12 @@ public interface PasteClient {
     /**
      * Creates a paste
      *
-     * @param lang The language to use, languages can be obtained from <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
-     * @param body The text content of the paste
-     * @param expiration The expiration of the paste, useful if you don't want to use the default set expiration on the builder
+     * @param lang
+     *         The language to use, languages can be obtained from <a href="https://paste.menudocs.org/languages.json">https://paste.menudocs.org/languages.json</a>
+     * @param body
+     *         The text content of the paste
+     * @param expiration
+     *         The expiration of the paste, useful if you don't want to use the default set expiration on the builder
      *
      * @return The id of the created paste, the paste can be retrieved with {@link #getPaste(String) #getPaste(String)}
      */
@@ -43,9 +48,20 @@ public interface PasteClient {
     /**
      * Retrieves a paste by it's id
      *
-     * @param pasteId The id of the paste to look up the info for
+     * @param pasteId
+     *         The id of the paste to look up the info for
      *
      * @return The paste
      */
     PendingRequest<Paste> getPaste(String pasteId);
+
+    /**
+     * Generates the url to a paste that you can put in your browser to view it
+     *
+     * @param pasteId
+     *         The id of the paste to generate the url for
+     *
+     * @return The generated url for the paste
+     */
+    String getPasteUrl(String pasteId);
 }

@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PasteClientBuilder {
 
@@ -38,8 +39,9 @@ public class PasteClientBuilder {
     /**
      * Sets the default paste expiry, this is useful so that you don't need to specify the expiry every time
      *
-     * @param defaultExpiry the default expiry time
-     *                      Examples: 30µs, 10s, 1h, 15d
+     * @param defaultExpiry
+     *         the default expiry time
+     *         Examples: 30µs, 10s, 1h, 15d
      *
      * @return The current builder for chaining
      */
@@ -51,7 +53,8 @@ public class PasteClientBuilder {
     /**
      * Sets the user agent
      *
-     * @param userAgent the user agent to use when making request
+     * @param userAgent
+     *         the user agent to use when making request
      *
      * @return The current builder for chaining
      */
@@ -63,7 +66,8 @@ public class PasteClientBuilder {
     /**
      * Sets the host that we need to use for making the requests
      *
-     * @param pasteHost the new paste host to use, default is {@link PasteHost#MENUDOCS MenuDocs}
+     * @param pasteHost
+     *         the new paste host to use, default is {@link PasteHost#MENUDOCS MenuDocs}
      *
      * @return The current builder for chaining
      */
@@ -95,7 +99,7 @@ public class PasteClientBuilder {
 
         @Override
         public PendingRequest<String> createPaste(String lang, String body) {
-            return createPaste(lang, body, this.defaultExpiry);
+            return this.createPaste(lang, body, this.defaultExpiry);
         }
 
         @Override
@@ -105,8 +109,8 @@ public class PasteClientBuilder {
             postBody.put("text", body);
             postBody.put("expire", expiration);
 
-            return createRequest(
-                    defaultRequest()
+            return this.createRequest(
+                    this.defaultRequest()
                             .header("Content-Type", "application/x-www-form-urlencoded")
                             .post(RequestBody.create(createFormBody(postBody).getBytes()))
                             .url(this.baseUrl + "/paste/new")
@@ -118,7 +122,7 @@ public class PasteClientBuilder {
 
         @Override
         public PendingRequest<Paste> getPaste(String pasteId) {
-            return createRequest(defaultRequest().get().url(this.baseUrl + "/paste/" + pasteId + ".json"))
+            return this.createRequest(this.defaultRequest().get().url(this.baseUrl + "/paste/" + pasteId + ".json"))
                     .build((r) -> {
                         JSONObject json = new JSONObject(new JSONTokener(r.body().byteStream()));
                         String id = json.getString("id");
@@ -127,7 +131,7 @@ public class PasteClientBuilder {
                         return new PasteImpl(
                                 id,
                                 json.getString("body"),
-                                this.baseUrl + "/paste/" + id,
+                                this.getPasteUrl(id),
                                 new LanguageImpl(
                                         language.getString("name"),
                                         language.getString("id")
@@ -136,29 +140,32 @@ public class PasteClientBuilder {
                     }, null);
         }
 
+        @Override
+        public String getPasteUrl(String pasteId) {
+            return this.baseUrl + "/paste/" + pasteId;
+        }
+
         private Request.Builder defaultRequest() {
             return new Request.Builder()
                     .header("User-Agent", this.userAgent);
         }
 
         private String createFormBody(Map<String, String> fields) {
-            // TODO: Use streams
 
-            StringBuilder builder = new StringBuilder();
+            return fields.entrySet()
+                    .stream()
+                    .map(
+                            (e) -> this.e(e.getKey()) + '=' + this.e(e.getValue())
+                    )
+                    .collect(Collectors.joining("&"));
+        }
 
+        private String e(String s) {
             try {
-                for (final Map.Entry<String, String> entry : fields.entrySet()) {
-                    builder.append('&')
-                            .append(URLEncoder.encode(entry.getKey(), "UTF-8"))
-                            .append('=')
-                            .append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-                }
+                return URLEncoder.encode(s, "UTF-8");
+            } catch (UnsupportedEncodingException ignored) {
+                return "null"; // should never happen
             }
-            catch (UnsupportedEncodingException ignored) {
-                return ""; // should never happen
-            }
-
-            return builder.toString().substring(1);
         }
     }
 }
