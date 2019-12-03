@@ -91,7 +91,7 @@ public class PasteClientBuilder {
         private final String baseUrl;
 
         private PasteClientImpl(String userAgent, String defaultExpiry, PasteHost pasteHost) {
-            super(new OkHttpClient.Builder().followRedirects(false).build());
+            super(new OkHttpClient.Builder().followRedirects(false).build(), null, true);
             this.userAgent = userAgent;
             this.defaultExpiry = defaultExpiry;
             this.baseUrl = pasteHost.getUrl();
