@@ -113,7 +113,7 @@ public class PasteClientBuilder {
             return this.createRequest(
                     this.defaultRequest()
                             .header("Content-Type", "application/x-www-form-urlencoded")
-                            .post(RequestBody.create(createFormBody(postBody).getBytes()))
+                            .post(RequestBody.create(null, createFormBody(postBody).getBytes()))
                             .url(this.baseUrl + "/paste/new")
             )
                     .setStatusCodeValidator(StatusCodeValidator.accept(303))
