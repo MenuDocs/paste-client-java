@@ -18,6 +18,7 @@ package org.menudocs.paste;
 
 import com.github.natanbc.reliqua.Reliqua;
 import com.github.natanbc.reliqua.request.PendingRequest;
+import com.github.natanbc.reliqua.util.StatusCodeValidator;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -112,17 +113,20 @@ public class PasteClientBuilder {
             return this.createRequest(
                     this.defaultRequest()
                             .header("Content-Type", "application/x-www-form-urlencoded")
-                            .post(RequestBody.create(createFormBody(postBody).getBytes()))
+                            .post(RequestBody.create(null, createFormBody(postBody).getBytes()))
                             .url(this.baseUrl + "/paste/new")
-            ).build((r) -> {
-                String loc = r.header("location");
-                return loc.substring(loc.lastIndexOf('/') + 1);
-            }, null);
+            )
+                    .setStatusCodeValidator(StatusCodeValidator.accept(303))
+                    .build((r) -> {
+                        String loc = r.header("location");
+                        return loc.substring(loc.lastIndexOf('/') + 1);
+                    }, null);
         }
 
         @Override
         public PendingRequest<Paste> getPaste(String pasteId) {
             return this.createRequest(this.defaultRequest().get().url(this.baseUrl + "/paste/" + pasteId + ".json"))
+                    .setStatusCodeValidator(StatusCodeValidator.ACCEPT_200)
                     .build((r) -> {
                         JSONObject json = new JSONObject(new JSONTokener(r.body().byteStream()));
                         String id = json.getString("id");

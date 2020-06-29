@@ -38,9 +38,9 @@ repositories {
 }
 
 dependencies {
-    api(group = "com.squareup.okhttp3", name = "okhttp", version = "4.0.1")
+    api(group = "com.squareup.okhttp3", name = "okhttp", version = "3.14.7")
     api(group = "org.json", name = "json", version = "20180813")
-    api(group = "me.duncte123", name = "reliqua", version = "2.4.8")
+    api(group = "me.duncte123", name = "reliqua", version = "2.4.10")
 }
 
 configure<JavaPluginConvention> {
