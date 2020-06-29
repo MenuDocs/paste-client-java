@@ -57,13 +57,13 @@ val test: Task by tasks
 val check: Task by tasks
 
 val sourcesJar = task<Jar>("sourcesJar") {
-    classifier = "sources"
+    archiveClassifier.set("sources")
     from(sourceSets["main"].allJava)
 }
 
 val javadocJar = task<Jar>("javadocJar") {
     dependsOn(javadoc)
-    classifier = "javadoc"
+    archiveClassifier.set("javadoc")
     from(javadoc.destinationDir)
 }
 
