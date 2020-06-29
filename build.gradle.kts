@@ -28,7 +28,7 @@ plugins {
 }
 
 group = "org.menudocs"
-version = "1.0.${getBuildNum()}"
+version = "1.1.${getBuildNum()}"
 val archivesBaseName = "paste-client-java"
 
 repositories {
@@ -119,5 +119,5 @@ bintrayUpload.apply {
 }
 
 fun getBuildNum(): String {
-    return System.getenv("CIRCLE_BUILD_NUM") ?: "dev"
+    return System.getenv("GITHUB_RUN_NUMBER") ?: "dev"
 }
