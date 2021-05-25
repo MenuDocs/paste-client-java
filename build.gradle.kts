@@ -14,8 +14,6 @@
  *    limitations under the License.
  */
 
-import com.jfrog.bintray.gradle.BintrayExtension
-import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import java.util.*
 
 plugins {
@@ -23,8 +21,6 @@ plugins {
     java
     `java-library`
     `maven-publish`
-
-    id("com.jfrog.bintray") version "1.8.4"
 }
 
 group = "org.menudocs"
@@ -32,26 +28,27 @@ version = "1.1.${getBuildNum()}"
 val archivesBaseName = "paste-client-java"
 
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    mavenCentral()
+    maven("https://duncte123.jfrog.io/artifactory/maven")
 }
 
 dependencies {
-    api(group = "com.squareup.okhttp3", name = "okhttp", version = "3.14.7")
-    api(group = "org.json", name = "json", version = "20180813")
-    api(group = "me.duncte123", name = "reliqua", version = "2.4.10")
+    api(group = "com.squareup.okhttp3", name = "okhttp", version = "3.14.9")
+    api(group = "org.json", name = "json", version = "20210307")
+    api(group = "me.duncte123", name = "reliqua", version = "2.5.1") {
+        exclude(group = "com.squareup.okhttp3", module = "okhttp")
+    }
 }
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
-val bintrayUpload: BintrayUploadTask by tasks
 val compileJava: JavaCompile by tasks
 val javadoc: Javadoc by tasks
 val jar: Jar by tasks
 val build: Task by tasks
+val publish: Task by tasks
 val clean: Task by tasks
 val test: Task by tasks
 val check: Task by tasks
@@ -68,8 +65,18 @@ val javadocJar = task<Jar>("javadocJar") {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "jfrog"
+            url = uri("https://duncte123.jfrog.io/artifactory/maven/")
+            credentials {
+                username = System.getenv("JFROG_USERNAME")
+                password = System.getenv("JFROG_TOKEN")
+            }
+        }
+    }
     publications {
-        register("BintrayUpload", MavenPublication::class) {
+        create<MavenPublication>("jfrog") {
             from(components["java"])
 
             artifactId = archivesBaseName
@@ -82,23 +89,6 @@ publishing {
     }
 }
 
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-    setPublications("BintrayUpload")
-    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-        repo = "maven"
-        name = "paste-client-java"
-        setLicenses("Apache-2.0")
-        vcsUrl = "https://github.com/MenuDocs/paste-client-java.git"
-        publish = true
-        version(delegateClosureOf<BintrayExtension.VersionConfig>  {
-            name = project.version as String
-            released = Date().toString()
-        })
-    })
-}
-
 build.apply {
     dependsOn(jar)
     dependsOn(javadocJar)
@@ -109,13 +99,12 @@ build.apply {
     sourcesJar.mustRunAfter(javadocJar)
 }
 
-bintrayUpload.apply {
-    dependsOn(clean)
+publish.apply {
     dependsOn(build)
-    build.mustRunAfter(clean)
 
-    onlyIf { System.getenv("BINTRAY_USER") != null }
-    onlyIf { System.getenv("BINTRAY_KEY") != null }
+    onlyIf {
+        System.getenv("JFROG_USERNAME") != null && System.getenv("JFROG_TOKEN") != null
+    }
 }
 
 fun getBuildNum(): String {

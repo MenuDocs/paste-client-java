@@ -11,9 +11,13 @@ The docs are available <a href="https://jitpack.io/com/github/MenuDocs/paste-cli
 The current latest version is: [ ![version][] ][download]
 
 #### Gradle
-```GRADLE
+```gradle
 repositories {
-    jcenter()
+    mavenCentral()
+    maven {
+        name 'duncte123-jfrog'
+        url 'https://duncte123.jfrog.io/artifactory/maven'
+    }
 }
 dependencies {
     implementation group: 'org.menudocs', name: 'paste-client-java', version: '[VERSION]'
@@ -21,18 +25,17 @@ dependencies {
 ```
 
 #### Maven
-```XML
+```xml
 <repository>
-    <id>jcenter</id>
-    <name>jcenter-bintray</name>
-    <url>https://jcenter.bintray.com</url>
+    <id>jfrog-duncte123</id>
+    <name>jfrog-duncte123</name>
+    <url>https://duncte123.jfrog.io/artifactory/maven</url>
 </repository>
 
 <dependency>
 	<groupId>org.menudocs</groupId>
 	<artifactId>paste-client-java</artifactId>
 	<version>[VERSION]</version>
-	<type>pom</type>
 </dependency>
 ```
 
@@ -83,5 +86,5 @@ client.getPaste(pasteID).async((paste) -> {
 ```
 
 
-[version]: https://api.bintray.com/packages/duncte123/maven/paste-client-java/images/download.svg
-[download]: https://bintray.com/duncte123/maven/paste-client-java/_latestVersion
+[version]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fduncte123.jfrog.io%2Fartifactory%2Fmaven%2Forg%2Fmenudocs%2Fpaste-client-java%2Fmaven-metadata.xml
+[download]: https://duncte123.jfrog.io/ui/packages/gav:%2F%2Fme.duncte123:botCommons
