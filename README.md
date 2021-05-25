@@ -87,4 +87,4 @@ client.getPaste(pasteID).async((paste) -> {
 
 
 [version]: https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fduncte123.jfrog.io%2Fartifactory%2Fmaven%2Forg%2Fmenudocs%2Fpaste-client-java%2Fmaven-metadata.xml
-[download]: https://duncte123.jfrog.io/ui/packages/gav:%2F%2Fme.duncte123:botCommons
+[download]: https://duncte123.jfrog.io/ui/packages/gav:%2F%2Forg.menudocs:paste-client-java
